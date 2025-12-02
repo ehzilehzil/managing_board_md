@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+label {
+    @apply font-bold;
+}
+
+input {
+    @apply px-1 py-1 rounded outline;
+}
+
+button {
+    @apply cursor-pointer px-1 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400;
+}

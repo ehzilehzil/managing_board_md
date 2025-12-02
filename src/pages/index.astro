@@ -1,16 +1,35 @@
 ---
-
+import Base from "../layouts/Base.astro";
+import Login from "../layouts/Login.astro";
+import ChangePW from "../layouts/ChangePW.astro";
+import Main from "../layouts/Main.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+	<div class="fixed top-0 right-0 bottom-0 left-0">
+		<div class="h-full w-full flex flex-col">
+			<div class="flex-[0_0_0] p-[4px]">
+				<Login />
+			</div>
+			<hr />
+			<div class="flex-[0_0_0] p-[4px]">
+				<ChangePW />
+			</div>
+			<hr />
+			<div class="flex-[1_0_0] p-[4px]">
+				<Main />
+			</div>
+		</div>
+	</div>
+</Base>
+
+<script>
+	document.addEventListener("alpine:init", () => {
+		Alpine.store("user", {
+			no: "00",
+			name: "김개동",
+			pw: "zz",
+			data: [],
+		});
+	});
+</script>
