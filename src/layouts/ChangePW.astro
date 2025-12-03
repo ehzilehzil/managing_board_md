@@ -1,21 +1,59 @@
 ---
+import 'jspreadsheet-ce/dist/jspreadsheet.css';
+import 'jsuites/dist/jsuites.css';
 ---
 
 <div>비밀번호를 변경하고 싶다면, 위에 "사번"/"이름"/현재의 "비밀번호"를 기입한 뒤, 원하는 비밀번호를 넣고 "비밀번호 변경하기"를 클릭하세요. 비밀번호를 잊어버렸다면 관리자에게 문의하시기 바랍니다.</div>
 <div x-data class="flex whitespace-nowrap items-center gap-x-[8px]">
     <div >
         <label>원하는 비밀번호:</label>
-        <input type="text" id="no" class="outline" />
+        <input type="text" id="no" x-model="$store.global.tobepw" />
     </div>
     <div>
-        <button>비밀번호 변경하기</button>
+        <button @click="$store.functions.changePW();">비밀번호 변경하기</button>
     </div>
 </div>
 
 <script>
-    document.addEventListener("alalpine:initialized", async () => {
-        
-    });
 
-    async function change_password() {};
+    document.addEventListener("alpine:initialized", async () => {
+        Alpine.store("functions").changePW = async () => {
+            console.log("changePW 호출");
+
+            const no = Alpine.store("global").no.trim();
+            const name = Alpine.store("global").name.trim();
+            const pw = Alpine.store("global").pw.trim();
+
+            if (no === "" || name === "" || pw === "") {
+                alert("사번/이름/비밀번호 모두 입력하세요.");
+                return;
+            }
+
+            
+            const tobepw = Alpine.store("global").tobepw.trim();
+            if (tobepw === undefined || tobepw.trim().length === "" || !/^[A-Za-z0-9]+$/.test(tobepw)) {
+                alert("원하는 비밀번호가 올바른 형식이 아닙니다. 알파벳과 숫자만 사용하세요.");
+                return;
+            }
+          
+
+
+            Alpine.store("tags").loading.style.display = "flex";
+            const res = await fetch(Alpine.store("global").url, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "changePW",
+                    no,
+                    name,
+                    pw,
+                    tobepw,
+                }),
+            });
+            const result = await res.json();
+            Alpine.store("tags").loading.style.display = "none";
+            
+            alert(result.message);
+
+        };
+    });   
 </script>

@@ -5,24 +5,20 @@
 <div x-data class="flex whitespace-nowrap items-center gap-x-[8px]">
     <div>
         <label>사번:</label>
-        <input type="text" id="no" />
+        <input type="text" id="no" x-model="$store.global.no"/>
     </div>
     <div>
         <label>이름:</label>
-        <input type="text" id="user" />
+        <input type="text" id="name" x-model="$store.global.name" />
     </div>
     <div>
         <label>비밀번호:</label>
-        <input type="text" id="pw" />
+        <input type="text" id="pw" x-model="$store.global.pw" />
     </div>
 </div>
 
 <script>
-    document.addEventListener("alalpine:initialized", async () => {
-        
+    document.addEventListener("alpine:initialized", async () => {
+        alert(`"사번"/"이름"/"비밀번호"를 입력한 뒤 시작하세요`);
     });
-
-    async function fetch_data() {};
-    async function init_jspreadsheet() {};
-    async function update_data() {};
 </script>

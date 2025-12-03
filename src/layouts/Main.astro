@@ -1,14 +1,135 @@
+---
+// import 'jspreadsheet-ce/dist/jspreadsheet.css';
+// import 'jsuites/dist/jsuites.css';
+---
+
 <div class="w-full h-full flex flex-col">
-    <div>"불러오기" 클릭해서, 담당하시는 거래처를 불러오시기 바랍니다. 상태를 수정한 뒤, "업데이트"를 클릭하면 거래처 상태가 수정반영됩니다.</div>
+    <div>"불러오기" 클릭해서, 담당하시는 거래처를 불러오시기 바랍니다. 상태를 수정한 뒤, 반드시 "업데이트"를 클릭해야 거래처 상태가 수정반영됩니다.</div>
     <div x-data>
-        <button>불러오기</button>
+        <button @click="$store.functions.getStatus();">불러오기</button>
         <button>업데이트</button>
     </div>
-    <div class="flex-[1_0_0]">
-        <div class="h-full w-full overflow-y-scroll">
+    <div class="flex-[1_0_0] overflow-auto">
+        <div class="h-full w-full">
             <div id="jspreadsheet"></div>
         </div>
     </div>
 </div>
 
+<script>
+    // import jspreadsheet from 'jspreadsheet-ce';
 
+    document.addEventListener("alpine:initialized", async () => {
+        Alpine.store("functions").getStatus = async () => {
+            console.log("getStatus 호출");
+
+            const no = Alpine.store("global").no.trim();
+            const name = Alpine.store("global").name.trim();
+            const pw = Alpine.store("global").pw.trim();
+
+            if (no === "" || name === "" || pw === "") {
+                alert("사번/이름/비밀번호 모두 입력하세요.");
+                return;
+            }
+
+            Alpine.store("tags").loading.style.display = "flex";
+            const res = await fetch(Alpine.store("global").url, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "getStatus",
+                    no,
+                    name,
+                    pw,
+                }),
+            });
+            const result = await res.json();
+            Alpine.store("tags").loading.style.display = "none";
+            
+            alert(result.message);
+            console.log(result.data);
+
+            // 스프레드시트 불러오기
+            const ss = Alpine.store("tags").jspreadsheet;
+            ss.innerHTML = "";
+
+            const table = document.createElement("table");
+
+            result.data.forEach((row, i) => {
+                if (i === 0) {
+                    const header = document.createElement("tr");
+                    row.forEach((x) => {
+                        const th = document.createElement("th");
+                        th.textContent = x;
+                        header.appendChild(th);
+                    });
+                    table.appendChild(header);
+                } else {
+                    const body = document.createElement("tr");
+                    row.forEach((x, i) => {
+                        const td = document.createElement("td");
+                        if (i < 4) {
+                            td.textContent = x;
+                        } else {
+                            const input = document.createElement("input");
+                            input.type = "checkbox";
+                            input.checked = (x === "O") ? true : false;
+                            td.appendChild(input);
+                        }
+                        body.appendChild(td);
+                    });
+                    table.appendChild(body);
+                }
+            });
+
+            ss.appendChild(table);
+
+
+            
+
+            // data.forEach(item => {
+            //     const row = document.createElement("tr");
+
+            //     const nameCell = document.createElement("td");
+            //     nameCell.textContent = item.name;
+            //     row.appendChild(nameCell);
+
+            //     const ageCell = document.createElement("td");
+            //     ageCell.textContent = item.age;
+            //     row.appendChild(ageCell);
+
+            //     table.appendChild(row);
+            // });
+
+
+
+
+
+            // //
+            // Alpine.store("tags").jspreadsheet.innerHTML = "";
+            // let data = result.data.slice(1);
+            // const columns = result.data[0].map((x, i) => {
+            //     switch (i) {
+            //     case 0:
+            //     case 1:
+            //     case 2:
+            //     case 3:
+            //         return { type: "text", title: x, readOnly: true };
+            //         break;
+            //     default:
+            //         return { type: "checkbox", title: x, checked: "O", uncheck: "X", width: 100 };
+            //     }
+            // });
+
+            // console.log(Alpine.store("tags").jspreadsheet);
+            // const ss = jspreadsheet(Alpine.store("tags").jspreadsheet, {
+            //     width: 100,
+            //     data,
+            //     columns,
+            //     onbeforedeleterow: function (_instance, _rows) { return false; },
+		    //     onbeforedeletecolumn: function (_instance, _columns) { return false; },
+            //     onbeforeinsertrow: function (_instance, _rows) { return false; },
+		    //     onbeforeinsertcolumn: function (_instance, _columns) { return false; },
+            // });
+        };
+    });
+</script>
