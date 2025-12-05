@@ -13,7 +13,7 @@ button {
 }
 
 table {
-    @apply border border-separate border-spacing-0 w-full;
+    @apply border border-separate border-spacing-0 w-full table-fixed;
 }
 
 table input {

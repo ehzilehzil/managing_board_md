@@ -59,8 +59,10 @@
             const thead = document.createElement("thead");
             const tbody = document.createElement("tbody");
 
-            result.data.forEach((row, i) => {
+            result.data.forEach((row, i, arr) => {
                 if (i === 0) {
+                    return;
+                } else if (i === 1) {
                     const tr = document.createElement("tr");
                     row.forEach((x) => {
                         const th = document.createElement("th");
@@ -76,17 +78,22 @@
                         if (i < 4) {
                             td.textContent = x;
                         } else {
-                            const input = document.createElement("input");
-                            input.type = "checkbox";
-                            input.checked = (x === "O") ? true : false;
-                            input.style.cursor = "pointer";
-                            td.appendChild(input);
-                            td.style.cursor = "pointer";
-                            td.addEventListener("click", (e) => {
-                                if (e.target.tagName.toLowerCase() === "input") return;    
-                                const checkbox = td.querySelector("input[type='checkbox']");
-                                if (checkbox) checkbox.checked = !checkbox.checked;
-                            });
+                            if (arr[0][i] === "checkbox") {
+                                const input = document.createElement("input");
+                                input.type = "checkbox";
+                                input.checked = (x === "O") ? true : false;
+                                input.style.cursor = "pointer";
+                                td.appendChild(input);
+                                td.style.cursor = "pointer";
+                                td.addEventListener("click", (e) => {
+                                    if (e.target.tagName.toLowerCase() === "input") return;    
+                                    const checkbox = td.querySelector("input[type='checkbox']");
+                                    if (checkbox) checkbox.checked = !checkbox.checked;
+                                });
+                            } else {
+                                td.contentEditable = "true";
+                                td.textContent = x;
+                            }
                         }
                         tr.appendChild(td);
                     });
@@ -132,7 +139,15 @@
                 
                 let tmp = [td[0].textContent, td[1].textContent, td[2].textContent, td[3].textContent];
                 for (let j = 4; j < td.length; j++) {
-                    tmp.push((td[j].firstChild.checked) ? "O" : "X");
+
+
+
+                    if (td[j].firstChild?.tagName?.toLowerCase() === "input") {
+                        tmp.push((td[j].firstChild.checked) ? "O" : "X");
+                    } else {
+                        tmp.push(td[j].textContent);
+                    }
+                    
                 }
 
                 data.push(tmp);

@@ -10,7 +10,7 @@ import alpinejs from '@astrojs/alpinejs';
 // https://astro.build/config
 const isDev = process.env.NODE_ENV === 'development';
 export default defineConfig({
-  base: isDev ? '/' : '/managing_board',
+  base: isDev ? '/' : '/managing_board_md',
   vite: {
     plugins: [tailwindcss()]
   },
