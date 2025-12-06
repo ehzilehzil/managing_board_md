@@ -21,7 +21,7 @@ table input {
 }
 
 thead {
-    @apply border sticky top-0;
+    @apply border sticky top-0 z-9999;
 }
 
 th {
@@ -29,5 +29,9 @@ th {
 }
 
 td {
-    @apply border max-w-[300px] px-[16px] py-[4px];
+    @apply relative border max-w-[300px] p-0 whitespace-pre-wrap;
+}
+
+textarea.editor {
+    @apply absolute top-0 w-full h-full left-0 resize-none border-none outline-none text-inherit font-[inherit];
 }

@@ -85,14 +85,17 @@
                                 input.style.cursor = "pointer";
                                 td.appendChild(input);
                                 td.style.cursor = "pointer";
+                                td.style.textAlign = "center";
                                 td.addEventListener("click", (e) => {
                                     if (e.target.tagName.toLowerCase() === "input") return;    
                                     const checkbox = td.querySelector("input[type='checkbox']");
                                     if (checkbox) checkbox.checked = !checkbox.checked;
                                 });
                             } else {
-                                td.contentEditable = "true";
+                                // td.contentEditable = "true";
                                 td.textContent = x;
+                                td.className = "editable";
+                                td.style.cursor = "pointer";
                             }
                         }
                         tr.appendChild(td);
@@ -103,6 +106,39 @@
             table.appendChild(tbody);
             ss.appendChild(table);
 
+            table.addEventListener("click", (e) => {
+                const td = e.target.closest("td.editable");
+                if (!td) return;
+                if (td.querySelector("textarea.editor")) return;
+
+                const textarea = document.createElement("textarea");
+                textarea.className = "editor";
+                textarea.value = td.textContent;
+                // textarea.style.height = td.offsetHeight + "px";
+
+                td.textContent = "";
+                td.appendChild(textarea);
+                textarea.focus();
+
+                textarea.addEventListener("blur", () => {
+                    td.textContent = textarea.value;
+                    // td.style.height = textarea.offsetHeight + "px";
+                });
+
+                textarea.addEventListener("input", () => {
+                    textarea.style.height = "auto";             // 높이 초기화
+                    textarea.style.height = textarea.scrollHeight + "px"; // 내용에 맞게 늘리기
+                    td.style.height = textarea.style.height;
+                });
+
+                textarea.addEventListener("keydown", (ev) => {
+                    if (ev.key === "Enter") {
+                        if (ev.shiftKey || ev.altKey) return; // 아무 것도 막지 않음 → textarea 줄바꿈 정상 동작
+                        ev.preventDefault();
+                        textarea.blur();
+                    }
+                });
+            });
             
             
         };
