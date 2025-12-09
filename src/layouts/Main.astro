@@ -75,29 +75,52 @@
                     const tr = document.createElement("tr");
                     row.forEach((x, i) => {
                         const td = document.createElement("td");
-                        if (i < 4) {
+                        switch (arr[0][i]) {
+                        case "checkbox":
+                            const input = document.createElement("input");
+                            input.type = "checkbox";
+                            input.checked = (x === "O") ? true : false;
+                            input.style.cursor = "pointer";
+                            td.appendChild(input);
+                            td.style.cursor = "pointer";
+                            td.style.textAlign = "center";
+                            td.addEventListener("click", (e) => {
+                                if (e.target.tagName.toLowerCase() === "input") return;    
+                                const checkbox = td.querySelector("input[type='checkbox']");
+                                if (checkbox) checkbox.checked = !checkbox.checked;
+                            });
+                            break;
+                        case "text":
                             td.textContent = x;
-                        } else {
-                            if (arr[0][i] === "checkbox") {
-                                const input = document.createElement("input");
-                                input.type = "checkbox";
-                                input.checked = (x === "O") ? true : false;
-                                input.style.cursor = "pointer";
-                                td.appendChild(input);
-                                td.style.cursor = "pointer";
-                                td.style.textAlign = "center";
-                                td.addEventListener("click", (e) => {
-                                    if (e.target.tagName.toLowerCase() === "input") return;    
-                                    const checkbox = td.querySelector("input[type='checkbox']");
-                                    if (checkbox) checkbox.checked = !checkbox.checked;
-                                });
-                            } else {
-                                // td.contentEditable = "true";
-                                td.textContent = x;
-                                td.className = "editable";
-                                td.style.cursor = "pointer";
-                            }
+                            td.className = "editable";
+                            td.style.cursor = "pointer";
+                            break;
+                        default:
+                            td.textContent = x;
                         }
+                        // if (i < 4) {
+                        //     td.textContent = x;
+                        // } else {
+                        //     if (arr[0][i] === "checkbox") {
+                        //         const input = document.createElement("input");
+                        //         input.type = "checkbox";
+                        //         input.checked = (x === "O") ? true : false;
+                        //         input.style.cursor = "pointer";
+                        //         td.appendChild(input);
+                        //         td.style.cursor = "pointer";
+                        //         td.style.textAlign = "center";
+                        //         td.addEventListener("click", (e) => {
+                        //             if (e.target.tagName.toLowerCase() === "input") return;    
+                        //             const checkbox = td.querySelector("input[type='checkbox']");
+                        //             if (checkbox) checkbox.checked = !checkbox.checked;
+                        //         });
+                        //     } else {
+                        //         // td.contentEditable = "true";
+                        //         td.textContent = x;
+                        //         td.className = "editable";
+                        //         td.style.cursor = "pointer";
+                        //     }
+                        // }
                         tr.appendChild(td);
                     });
                     tbody.appendChild(tr);
@@ -173,8 +196,9 @@
             for (let i = 1; i < tr.length; i++) {
                 const td = tr[i].querySelectorAll("td");
                 
-                let tmp = [td[0].textContent, td[1].textContent, td[2].textContent, td[3].textContent];
-                for (let j = 4; j < td.length; j++) {
+                // let tmp = [td[0].textContent, td[1].textContent, td[2].textContent, td[3].textContent];
+                let tmp = [];
+                for (let j = 0; j < td.length; j++) {
 
 
 
